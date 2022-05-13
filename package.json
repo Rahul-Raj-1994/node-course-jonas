@@ -1,0 +1,26 @@
+{
+  "name": "starter",
+  "version": "1.0.0",
+  "description": "Learning node.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rahul-Raj-1994/node-course-jonas.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rahul-Raj-1994/node-course-jonas/issues"
+  },
+  "homepage": "https://github.com/Rahul-Raj-1994/node-course-jonas#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "slugify": "^1.6.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
