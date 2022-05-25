@@ -30,28 +30,69 @@ const url = require('url');
 
 // SERVER
 
+const replaceTemplate = (template, product) => {
+  let output = template.replace(/{%PRODUCTNAME%}/g, product.productName);
+  output = template.replace(/{%IMAGE%}/g, product.image);
+  output = template.replace(/{%FROM%}/g, product.from);
+  output = template.replace(/{%QUANTITY%}/g, product.quantity);
+  output = template.replace(/{%PRICE%}/g, product.price);
+  output = template.replace(/{%ID%}/g, product.id);
+  output = template.replace(/{%NUTRIENTS%}/g, product.nutrients);
+  output = template.replace(/{%DESCRIPTION%}/g, product.description);
+
+  if (!product.organic)
+    output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
+
+  return output;
+};
+
+const tempCard = fs.readFileSync(
+  `${__dirname}/templates/template-card.html`,
+  'utf-8'
+);
+const tempProduct = fs.readFileSync(
+  `${__dirname}/templates/template-product.html`,
+  'utf-8'
+);
+const tempOverview = fs.readFileSync(
+  `${__dirname}/templates/template-overview.html`,
+  'utf-8'
+);
+
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const dataObj = JSON.parse(data);
 
 const server = http.createServer((req, res) => {
-    const pathName = req.url;
+  const pathName = req.url;
 
-    if (pathName === '/' || pathName === '/overview') {
-        res.end('This is the OVERVIEW');
-    } else if (pathName === '/product') {
-        res.end('This is the PRODUCT');
-    } else if (pathName === '/api') {
-        res.writeHead(200, { 'Content-type': 'application/json' });
-        res.end(data);
-    } else {
-        res.writeHead(404, {
-            'Content-type': 'text/html',
-            'my-own-header': 'hello-world',
-        });
-        res.end('<h1>Page not found!!</h1>');
-    }
-})
+  // Overview page
+  if (pathName === '/' || pathName === '/overview') {
+    res.writeHead(200, { 'Content-type': 'text/html' });
+
+    const cardsHtml = dataObj.map((el) => replaceTemplate(tempCard, el));
+    console.log(cardsHtml);
+
+    res.end(tempOverview);
+
+    //Product page
+  } else if (pathName === '/product') {
+    res.end('This is the PRODUCT');
+
+    // api
+  } else if (pathName === '/api') {
+    res.writeHead(200, { 'Content-type': 'application/json' });
+    res.end(data);
+
+    //Not Found
+  } else {
+    res.writeHead(404, {
+      'Content-type': 'text/html',
+      'my-own-header': 'hello-world',
+    });
+    res.end('<h1>Page not found!!</h1>');
+  }
+});
 
 server.listen(8000, '127.0.0.1', () => {
-    console.log('Listening to requests on port 8000');
-})
+  console.log('Listening to requests on port 8000');
+});
